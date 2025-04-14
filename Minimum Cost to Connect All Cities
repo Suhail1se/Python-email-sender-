@@ -1,0 +1,33 @@
+class UnionFind:
+    def __init__(self, n):
+        self.parent = list(range(n))
+    
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])  # Path compression
+        return self.parent[x]
+    
+    def union(self, x, y):
+        px = self.find(x)
+        py = self.find(y)
+        if px == py:
+            return False
+        self.parent[py] = px
+        return True
+
+def minimum_cost_to_connect_all_cities(n, connections):
+    uf = UnionFind(n)
+    connections.sort(key=lambda x: x[2])  # sort by cost
+    total_cost = 0
+    edges_used = 0
+
+    for u, v, cost in connections:
+        if uf.union(u, v):
+            total_cost += cost
+            edges_used += 1
+            if edges_used == n - 1:
+                return total_cost
+
+    return -1  # not enough connections to connect all cities
+
+#Coded_by_Suhail_Fraj
